@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JFetch", "JFetch\JFetch.csproj", "{87DF2F17-85B4-4D10-9252-806CF3E6EB1E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{87DF2F17-85B4-4D10-9252-806CF3E6EB1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87DF2F17-85B4-4D10-9252-806CF3E6EB1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87DF2F17-85B4-4D10-9252-806CF3E6EB1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87DF2F17-85B4-4D10-9252-806CF3E6EB1E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F863584E-370F-4481-A042-1B80CC0B09AC}
+	EndGlobalSection
+EndGlobal

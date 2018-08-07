@@ -1,0 +1,10 @@
+C:\Users\cohara1\source\repos\JFetch\JFetch\bin\Debug\JFetch.exe.config
+C:\Users\cohara1\source\repos\JFetch\JFetch\bin\Debug\JFetch.exe
+C:\Users\cohara1\source\repos\JFetch\JFetch\bin\Debug\JFetch.pdb
+C:\Users\cohara1\source\repos\JFetch\JFetch\obj\Debug\JFetch.csproj.CoreCompileInputs.cache
+C:\Users\cohara1\source\repos\JFetch\JFetch\obj\Debug\JFetch.exe
+C:\Users\cohara1\source\repos\JFetch\JFetch\obj\Debug\JFetch.pdb
+C:\Users\cohara1\source\repos\JFetch\JFetch\obj\Debug\JFetch.csprojAssemblyReference.cache
+C:\Users\cohara1\source\repos\JFetch\JFetch\bin\Debug\Newtonsoft.Json.dll
+C:\Users\cohara1\source\repos\JFetch\JFetch\bin\Debug\Newtonsoft.Json.xml
+C:\Users\cohara1\source\repos\JFetch\JFetch\obj\Debug\JFetch.csproj.CopyComplete
