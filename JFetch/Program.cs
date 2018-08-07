@@ -12,11 +12,11 @@ namespace JFetch {
 	
 	class Program {
 
-		public static void DoWithResponse (HttpWebRequest request, Action<HttpWebResponse> responseAction) {
+		public static void DoWithResponse (HttpWebRequest request, object otherstuff, Action<HttpWebResponse, object> responseAction) {
 			Action wrapperAction = () => {
 				request.BeginGetResponse(new AsyncCallback((iar) => {
 					var response = (HttpWebResponse)((HttpWebRequest)iar.AsyncState).EndGetResponse(iar);
-					responseAction(response);
+					responseAction(response, otherstuff);
 				}), request);
 			};
 			wrapperAction.BeginInvoke(new AsyncCallback((iar) => {
@@ -25,25 +25,29 @@ namespace JFetch {
 			}), wrapperAction);
 		}
 
-		public static void JFetch(string url, List<Dictionary<string, string>> result) {
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+		//public static void SetJsonDict(HttpWebResponse response, out object target) {
+		//	var body = new StreamReader(response.GetResponseStream()).ReadToEnd();
+		//	target = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(body);
+		//}
 
-			DoWithResponse(request, (response) => {
+		public static void JFetch(HttpWebRequest request, out object target) {
+			object toRet = null;
+			DoWithResponse(request, toRet, (response, otherstuff) => {
 				var body = new StreamReader(response.GetResponseStream()).ReadToEnd();
-				var res = JsonConvert.DeserializeObject<List<KeyValuePair<string, string>>>(body).ToDictionary(x => x.Key, y => y.Value);
+				otherstuff = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(body);
 			});
-
-		}
-
-		public static void setValue(out string toSet, string val) {
-			toSet = val;
+			target = toRet;
+			Console.WriteLine(toRet);
 		}
 
 		static void Main(string[] args) {
 
-			List<Dictionary<string, string>> table = null; 
-			JFetch("http://mysafeinfo.com/api/data?list=englishmonarchs&format=json", table);
+			//http://mysafeinfo.com/api/data?list=englishmonarchs&format=json
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://mysafeinfo.com/api/data?list=englishmonarchs&format=json");
+			object table = null;
+			JFetch(request, out table);
 			Console.Read();
+
 		}
 
 	}
