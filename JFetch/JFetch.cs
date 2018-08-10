@@ -7,7 +7,7 @@ using System.Net.Http;
 using Newtonsoft.Json;
 
 namespace JFetch {
-	static class JFetch {
+	public static class JFetch {
 
 		static internal T[,] To2D<T>(T[][] source) {
 			try {
@@ -47,6 +47,37 @@ namespace JFetch {
 			object[,] final;
 			final = To2D(result);
 			return final;
+		}
+
+		public static object[,] JFetchSync(string url) {
+			var client = new HttpClient();
+			var response = client.GetAsync(url).Result;
+
+			if (response.IsSuccessStatusCode) {
+				var responseContent = response.Content;
+				var j = responseContent.ReadAsStringAsync().Result;
+				var d = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(j);
+
+				List<List<object>> tbl = new List<List<object>>();
+				foreach (Dictionary<string, string> dict in d) {
+					List<object> currentRow = new List<object>();
+					foreach (KeyValuePair<string, string> kvp in dict) {
+						currentRow.Add(kvp.Value);
+					}
+					tbl.Add(currentRow);
+				}
+
+				object[][] result;
+				result = tbl.Select(l => l.ToArray()).ToArray();
+				object[,] final;
+				final = To2D(result);
+				return final;
+			}
+			else {
+				object[,] retError = { { "HTTP error" } };
+				return retError;
+			}
+
 		}
 
 	}
