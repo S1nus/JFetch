@@ -26,8 +26,7 @@ namespace JFetch {
 			} 
 		}
 
-		public static async Task<object[,]> JFetchAsync(string url) {
-			var client = new HttpClient();
+		public static async Task<object[,]> JFetchAsync(string url, HttpClient client) {
 			var response = await client.GetAsync(url).ConfigureAwait(false);
 			response.EnsureSuccessStatusCode();
 			var j = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -49,8 +48,7 @@ namespace JFetch {
 			return final;
 		}
 
-		public static object[,] JFetchSync(string url) {
-			var client = new HttpClient();
+		public static object[,] JFetchSync(string url, HttpClient client) {
 			var response = client.GetAsync(url).Result;
 
 			if (response.IsSuccessStatusCode) {
