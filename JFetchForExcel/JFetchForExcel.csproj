@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArrayResizer.cs" />
     <Compile Include="ExcelAddin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -53,7 +54,7 @@
     <None Include="Properties\ExcelDna.Build.props" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JFetchNew\JFetch.csproj">
+    <ProjectReference Include="..\JFetch\JFetch.csproj">
       <Project>{8518056f-b8fa-47d0-a4ec-f51a93970cdc}</Project>
       <Name>JFetch</Name>
     </ProjectReference>
