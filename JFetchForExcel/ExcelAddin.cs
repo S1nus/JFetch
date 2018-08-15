@@ -33,18 +33,20 @@ namespace JFetch {
 		}*/
 		public static object GetKingsResize() {
 			//return ArrayResizer.Resize(JFetch.JFetchSync("http://mysafeinfo.com/api/data?list=englishmonarchs&format=json", client));
+			ExcelReference caller = XlCall.Excel(XlCall.xlfCaller) as ExcelReference;
 			return ExcelAsyncUtil.Observe("GetKingsResize", null, delegate {
-				return new ExcelTaskObservable<object>(thingy());
-				/*return new ExcelTaskObservable<object[,]>(
-					JFetch.JFetchAsync("http://mysafeinfo.com/api/data?list=englishmonarchs&format=json", client)
-				);*/
-			});
-		}
+				TaskCompletionSource<object[,]> tcs = new TaskCompletionSource<object[,]>();
 
-		public static async Task<object> thingy() {
-			object[,] result = await JFetch.JFetchAsync("http://mysafeinfo.com/api/data?list=englishmonarchs&format=json", client);
-			//return ArrayResizer.Resize(result);	
-			return result;
+				Task.Factory.StartNew(async delegate {
+					try {
+						tcs.SetResult((object[,])ArrayResizer.Resize(JFetch.JFetchSync("http://mysafeinfo.com/api/data?list=englishmonarchs&format=json", client), caller));
+					} catch (Exception ex) {
+						tcs.SetResult(new object[,]{ { ex.ToString()} });
+					}
+				}, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+
+				return new ExcelTaskObservable<object[,]>(tcs.Task);
+			});
 		}
 
 		private static string GetCacheHashcode(params object[] args) {
