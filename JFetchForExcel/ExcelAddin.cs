@@ -17,6 +17,7 @@ namespace JFetch {
 	public static class ExcelAddin {
 
 		private static bool loggedIn = false;
+		private static bool loggingIn = false;
 		private static HttpClient client = new HttpClient();
 		private static string token = "";
 
@@ -26,13 +27,7 @@ namespace JFetch {
 		}
 
 		[ExcelFunction(Description = "Get Kings Async and Resize")]
-		/*public static object GetKingsResize() {
-			return ExcelAsyncUtil.Run("GetKingsResizes", new object[] { }, () => {
-				return ArrayResizer.Resize(JFetch.JFetchSync("http://mysafeinfo.com/api/data?list=englishmonarchs&format=json", client));	
-			});
-		}*/
 		public static object GetKingsResize() {
-			//return ArrayResizer.Resize(JFetch.JFetchSync("http://mysafeinfo.com/api/data?list=englishmonarchs&format=json", client));
 			ExcelReference caller = XlCall.Excel(XlCall.xlfCaller) as ExcelReference;
 			return ExcelAsyncUtil.Observe("GetKingsResize", null, delegate {
 				TaskCompletionSource<object[,]> tcs = new TaskCompletionSource<object[,]>();
@@ -49,39 +44,28 @@ namespace JFetch {
 			});
 		}
 
-		private static string GetCacheHashcode(params object[] args) {
-			return Convert.ToString(args[0]) + Convert.ToString(args[1]);
+		private static async void authAsync(string username, string password) {
+			if (!loggingIn && !loggedIn) {
+				loggingIn = true;
+				client.DefaultRequestHeaders.Add("Authorization", "Basic " + Base64Encode(username + ":" + password));
+				var response = await client.GetAsync("https://api.orionadvisor.com/api/v1/Security/Token").ConfigureAwait(false);
+				//response.EnsureSuccessStatusCode();
+				var j = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+				try {
+					Dictionary<string, string> respDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(j);
+					token = respDict["access_token"];
+					loggedIn = true;
+				}
+				catch (Exception ex) {
+					Console.WriteLine(ex.ToString());
+				}
+			}
 		}
 
-		/*public static object GetFpFocus() {
-			if (!loggedIn) {
-				authAsync("intern4@fpcm.net", "Unix15cool");
-				return null;
-			}
-
-			Dictionary<object, object> toPost = new Dictionary<object, object>();
-			toPost["prompts"] = new List<Dictionary<string, string>>();
-			Dictionary<string, string> date = new Dictionary<string, string>();
-
-			client.DefaultRequestHeaders.Clear();
-			client.DefaultRequestHeaders.Add("Authorization", "Session " + token);
-			return ArrayResizer.Resize(JFetch.JFetchSync("https://api.orionadvisor.com/api/v1/reporting/custom/13095/generate/table", client));
-		}*/
-
-		/*private static async void authAsync(string username, string password) {
-			client.DefaultRequestHeaders.Add("Authentication", "Basic " + Base64Encode(username + ":" + password));
-			var response = await client.GetAsync("https://api.orionadvisor.com/api/v1/Security/Token").ConfigureAwait(false);
-			response.EnsureSuccessStatusCode();
-			var j = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-			Dictionary<string, string> respDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(j);
-			token = respDict["access_token"];
-			loggedIn = true;
-		}*/
-
-		/*internal static string Base64Encode(string plaintext) {
+		internal static string Base64Encode(string plaintext) {
 			var plaintextbytes = System.Text.Encoding.UTF8.GetBytes(plaintext);
 			return System.Convert.ToBase64String(plaintextbytes);
-		}*/
+		}
 
 	}
 
