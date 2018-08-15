@@ -50,6 +50,8 @@
     <Compile Include="ArrayResizer.cs" />
     <Compile Include="AsyncTaskUtils.cs" />
     <Compile Include="ExcelAddin.cs" />
+    <Compile Include="FunctionFactory.cs" />
+    <Compile Include="NonLockingHashMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

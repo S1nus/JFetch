@@ -11,6 +11,7 @@ using System.Timers;
 using System.Threading;
 using Newtonsoft.Json;
 using JFetchUtils;
+using OrionApiSdk.Utils;
 
 namespace JFetch {
 	public static class ExcelAddin {
@@ -30,45 +31,25 @@ namespace JFetch {
 				return ArrayResizer.Resize(JFetch.JFetchSync("http://mysafeinfo.com/api/data?list=englishmonarchs&format=json", client));	
 			});
 		}*/
-
 		public static object GetKingsResize() {
-			try {
-				ExcelReference caller = XlCall.Excel(XlCall.xlfCaller) as ExcelReference;
-
-				return ExcelAsyncUtil.Observe("GetKingsResize", "just:somestuff", delegate {
-					TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
-
-					Task.Factory.StartNew(async delegate {
-						try {
-							//tcs.SetResult(/*stuff*/);
-							tcs.SetResult(
-								await AsyncQueryTopic(caller, new object[] { }).ConfigureAwait(false);
-							);
-						}
-						catch (Exception ex) {
-							tcs.SetException(ex);
-						}
-					}, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
-
-					return new AsyncTaskUtils.ExcelTaskObservable<object>(tcs.Task);
-				});
-			}
-			catch (Exception ex) {
-				return new object[,] { { ex.ToString() } };
-			}
+			//return ArrayResizer.Resize(JFetch.JFetchSync("http://mysafeinfo.com/api/data?list=englishmonarchs&format=json", client));
+			return ExcelAsyncUtil.Observe("GetKingsResize", null, delegate {
+				return new ExcelTaskObservable<object>(thingy());
+				/*return new ExcelTaskObservable<object[,]>(
+					JFetch.JFetchAsync("http://mysafeinfo.com/api/data?list=englishmonarchs&format=json", client)
+				);*/
+			});
 		}
 
-		private static async Task<object[,]> AsyncQueryTopic(ExcelReference caller, object[] args) {
-			var result = await JFetch.JFetch.JFetchAsync("http://mysafeinfo.com/api/data?list=englishmonarchs&format=json", client);
-
-			return (object[,])ArrayResizer.Resize(result, caller);
+		public static async Task<object> thingy() {
+			object[,] result = await JFetch.JFetchAsync("http://mysafeinfo.com/api/data?list=englishmonarchs&format=json", client);
+			//return ArrayResizer.Resize(result);	
+			return result;
 		}
 
-
-
-		/*private async Task<object [,]> DoKingFetchAsync(ExcelReference caller, object[] args) {
-
-		}*/
+		private static string GetCacheHashcode(params object[] args) {
+			return Convert.ToString(args[0]) + Convert.ToString(args[1]);
+		}
 
 		/*public static object GetFpFocus() {
 			if (!loggedIn) {
@@ -99,15 +80,72 @@ namespace JFetch {
 			var plaintextbytes = System.Text.Encoding.UTF8.GetBytes(plaintext);
 			return System.Convert.ToBase64String(plaintextbytes);
 		}*/
-		
-	}
-	public class ResizeResult {
-		public bool Resize { get; set; }
-		public object[,] Result { get; set; }
 
-		public ResizeResult(bool r, object[,] res) {
-			Resize = r;
-			Result = res;
+	}
+
+	public class ExcelTaskObservable<TResult> : IExcelObservable {
+		readonly Task<TResult> _task;
+		readonly CancellationTokenSource _cts;
+
+		public ExcelTaskObservable(Task<TResult> task) {
+			_task = task;
+		}
+
+		public ExcelTaskObservable(Task<TResult> task, CancellationTokenSource cts)
+			: this(task) {
+			_cts = cts;
+		}
+
+		public IDisposable Subscribe(IExcelObserver observer) {
+			// Start with a disposable that does nothing
+			// Possibly set to a CancellationDisposable later
+			IDisposable disp = DefaultDisposable.Instance;
+
+			switch (_task.Status) {
+				case TaskStatus.RanToCompletion:
+					observer.OnNext(_task.Result);
+					observer.OnCompleted();
+					break;
+				case TaskStatus.Faulted:
+					observer.OnError(_task.Exception.InnerException);
+					break;
+				case TaskStatus.Canceled:
+					observer.OnError(new TaskCanceledException(_task));
+					break;
+
+				default:
+					var task = _task;
+					// OK - the Task has not completed synchronously
+					// First set up a continuation that will suppress Cancel after the Task completes
+					if (_cts != null) {
+						var cancelDisp = new CancellationDisposable(_cts);
+						task = _task.ContinueWith(t => {
+							cancelDisp.SuppressCancel();
+							return t;
+						}).Unwrap();
+
+						// Then this will be the IDisposable we return from Subscribe
+						disp = cancelDisp;
+					}
+					// And handle the Task completion
+					task.ContinueWith(t => {
+						switch (t.Status) {
+							case TaskStatus.RanToCompletion:
+								observer.OnNext(t.Result);
+								observer.OnCompleted();
+								break;
+							case TaskStatus.Faulted:
+								observer.OnError(t.Exception.InnerException);
+								break;
+							case TaskStatus.Canceled:
+								observer.OnError(new TaskCanceledException(t));
+								break;
+						}
+					});
+					break;
+			}
+
+			return disp;
 		}
 	}
 
