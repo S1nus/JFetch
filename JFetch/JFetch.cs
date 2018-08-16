@@ -26,8 +26,14 @@ namespace JFetch {
 			} 
 		}
 
-		public static async Task<object[,]> JFetchAsync(string url, HttpClient client) {
-			var response = await client.GetAsync(url).ConfigureAwait(false);
+		public static async Task<object[,]> JFetchAsync(string url, HttpClient client, string mode = "get", object payload = null) {
+			HttpResponseMessage response;
+			if (mode.ToLower() == "post") {
+				response = await client.PostAsync(url, (HttpContent) payload).ConfigureAwait(false);
+			}
+			else {
+				response = await client.GetAsync(url).ConfigureAwait(false);
+			}
 			response.EnsureSuccessStatusCode();
 			var j = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 			var d = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(j);
@@ -48,9 +54,14 @@ namespace JFetch {
 			return final;
 		}
 
-		public static object[,] JFetchSync(string url, HttpClient client) {
-			var response = client.GetAsync(url).Result;
-
+		public static object[,] JFetchSync(string url, HttpClient client, string mode = "get", object payload = null) {
+			HttpResponseMessage response;
+			if (mode.ToLower() == "post") {
+				response = client.PostAsync(url, (HttpContent) payload).Result;
+			}
+			else {
+				response = client.GetAsync(url).Result;
+			}
 			if (response.IsSuccessStatusCode) {
 				var responseContent = response.Content;
 				var j = responseContent.ReadAsStringAsync().Result;

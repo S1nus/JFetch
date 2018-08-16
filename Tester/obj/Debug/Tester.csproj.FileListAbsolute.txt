@@ -1,0 +1,14 @@
+C:\Users\intern2\source\repos\JFetch\Tester\bin\Debug\Tester.exe.config
+C:\Users\intern2\source\repos\JFetch\Tester\bin\Debug\Tester.exe
+C:\Users\intern2\source\repos\JFetch\Tester\bin\Debug\Tester.pdb
+C:\Users\intern2\source\repos\JFetch\Tester\bin\Debug\JFetchNew.dll
+C:\Users\intern2\source\repos\JFetch\Tester\bin\Debug\OrionStuff.dll
+C:\Users\intern2\source\repos\JFetch\Tester\bin\Debug\Newtonsoft.Json.dll
+C:\Users\intern2\source\repos\JFetch\Tester\bin\Debug\JFetchNew.pdb
+C:\Users\intern2\source\repos\JFetch\Tester\bin\Debug\OrionStuff.pdb
+C:\Users\intern2\source\repos\JFetch\Tester\bin\Debug\Newtonsoft.Json.xml
+C:\Users\intern2\source\repos\JFetch\Tester\obj\Debug\Tester.csprojAssemblyReference.cache
+C:\Users\intern2\source\repos\JFetch\Tester\obj\Debug\Tester.csproj.CoreCompileInputs.cache
+C:\Users\intern2\source\repos\JFetch\Tester\obj\Debug\Tester.csproj.CopyComplete
+C:\Users\intern2\source\repos\JFetch\Tester\obj\Debug\Tester.exe
+C:\Users\intern2\source\repos\JFetch\Tester\obj\Debug\Tester.pdb

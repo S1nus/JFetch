@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JFetchForExcel", "JFetchFor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JFetch", "JFetch\JFetch.csproj", "{8518056F-B8FA-47D0-A4EC-F51A93970CDC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{8B73B1A9-4E8B-42D2-BA4F-9798414EB579}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrionStuff", "OrionStuff\OrionStuff.csproj", "{507C29A5-FE60-4AA8-9091-BD1FC755053A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{8518056F-B8FA-47D0-A4EC-F51A93970CDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8518056F-B8FA-47D0-A4EC-F51A93970CDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8518056F-B8FA-47D0-A4EC-F51A93970CDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B73B1A9-4E8B-42D2-BA4F-9798414EB579}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B73B1A9-4E8B-42D2-BA4F-9798414EB579}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B73B1A9-4E8B-42D2-BA4F-9798414EB579}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B73B1A9-4E8B-42D2-BA4F-9798414EB579}.Release|Any CPU.Build.0 = Release|Any CPU
+		{507C29A5-FE60-4AA8-9091-BD1FC755053A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{507C29A5-FE60-4AA8-9091-BD1FC755053A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{507C29A5-FE60-4AA8-9091-BD1FC755053A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{507C29A5-FE60-4AA8-9091-BD1FC755053A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

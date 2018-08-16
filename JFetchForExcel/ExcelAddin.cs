@@ -12,14 +12,13 @@ using System.Threading;
 using Newtonsoft.Json;
 using JFetchUtils;
 using OrionApiSdk.Utils;
+using Newtonsoft.Json.Linq;
+using OrionStuff;
 
 namespace JFetch {
 	public static class ExcelAddin {
 
-		private static bool loggedIn = false;
-		private static bool loggingIn = false;
-		private static HttpClient client = new HttpClient();
-		private static string token = "";
+		private static HttpClient client;
 
 		[ExcelFunction(Description = "Print info about Kings")]
 		public static object GetKings() {
@@ -44,28 +43,90 @@ namespace JFetch {
 			});
 		}
 
-		private static async void authAsync(string username, string password) {
-			if (!loggingIn && !loggedIn) {
-				loggingIn = true;
-				client.DefaultRequestHeaders.Add("Authorization", "Basic " + Base64Encode(username + ":" + password));
-				var response = await client.GetAsync("https://api.orionadvisor.com/api/v1/Security/Token").ConfigureAwait(false);
-				//response.EnsureSuccessStatusCode();
-				var j = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-				try {
-					Dictionary<string, string> respDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(j);
-					token = respDict["access_token"];
-					loggedIn = true;
-				}
-				catch (Exception ex) {
-					Console.WriteLine(ex.ToString());
-				}
-			}
+		[ExcelFunction(Description = "Attempt at FP_Focus")]
+		public static object Fp_Focus_Patch(string groupname, string date) {
+			ExcelReference caller = XlCall.Excel(XlCall.xlfCaller) as ExcelReference;
+			return ExcelAsyncUtil.Observe("Fp_Focus_Patch", null, delegate {
+				TaskCompletionSource<object[,]> tcs = new TaskCompletionSource<object[,]>();
+
+				Task.Factory.StartNew(async delegate {
+					object[,] fpresult = await OrionStuff.Orion.FP_Focus(groupname, date);
+					try {
+						tcs.SetResult((object[,])ArrayResizer.Resize(fpresult, caller));
+					}
+					catch (Exception ex) {
+						tcs.SetResult(new object[,] { { ex.ToString() } });
+					}
+				}, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+
+				return new ExcelTaskObservable<object[,]>(tcs.Task);
+			});
 		}
 
-		internal static string Base64Encode(string plaintext) {
-			var plaintextbytes = System.Text.Encoding.UTF8.GetBytes(plaintext);
-			return System.Convert.ToBase64String(plaintextbytes);
+		/*
+		[ExcelFunction(Description = "Get FP_Focus Data from Orion")]
+		public static object Orion_FP_Focus_Patch(string group, string date) {
+			var toPost = @"{			
+				'prompts': [
+					{
+						'id' : 17307,
+						'code' : '@asof',
+						'prompt' : 'As Of Date',
+						'promptDescription' : '',
+						'promptType' : 'Date',
+						'defaultValue' : '{0}',
+						'isPromptUser' : true,
+						'sortOrder' : null
+					},
+					{
+						'id' : 23342,
+						'code' : '@group',
+						'prompt' : 'Group',
+						'promptDescription' : 'Enter FPSUP, CMSUP, OASUP, ACSUP, CCSUP, ACBALA1, ACBALA2, ACBALA3, MISUP, or EQUITY',
+						'promptType' : 'Text',
+						'defaultValue' : '{1}',
+						'isPromptUser' : true,
+						'sortOrder' : null
+					}
+				]	
+			}";
+			var toSend = String.Format(toPost, date, group);
+			var content = new StringContent(toSend, Encoding.UTF8, "application/json");
+			ExcelReference caller = XlCall.Excel(XlCall.xlfCaller) as ExcelReference;
+			return ExcelAsyncUtil.Observe("GetKingsResize", null, delegate {
+				TaskCompletionSource<object[,]> tcs = new TaskCompletionSource<object[,]>();
+
+				Task.Factory.StartNew(async delegate {
+					try {
+						//tcs.SetResult((object[,])ArrayResizer.Resize(JFetch.JFetchSync("http://mysafeinfo.com/api/data?list=englishmonarchs&format=json", client), caller));
+						var response = await client.PostAsync("https://api.orionadvisor.com/api/v1/Reporting/custom/13095/Generate/Table", content);
+						var j = await response.Content.ReadAsStringAsync();
+						var d = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(j);
+						List<List<object>> tbl = new List<List<object>>();
+						foreach (Dictionary<string, string> dict in d) {
+							List<object> currentRow = new List<object>();
+							foreach (KeyValuePair<string, string> kvp in dict) {
+								currentRow.Add(kvp.Value);
+							}
+							tbl.Add(currentRow);
+						}
+
+						object[][] result;
+						result = tbl.Select(l => l.ToArray()).ToArray();
+						object[,] final;
+						final = JFetch.To2D(result);
+						tcs.SetResult((object[,])ArrayResizer.Resize(final));
+					} catch (Exception ex) {
+						tcs.SetResult(new object[,]{ { ex.ToString()} });
+					}
+				}, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+
+				return new ExcelTaskObservable<object[,]>(tcs.Task);
+			});
 		}
+		*/
+
+
 
 	}
 

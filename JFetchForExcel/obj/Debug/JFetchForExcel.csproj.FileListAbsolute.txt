@@ -2,7 +2,9 @@ C:\Users\intern2\Source\Repos\JFetch\JFetchForExcel\bin\Debug\JFetchForExcel.dll
 C:\Users\intern2\Source\Repos\JFetch\JFetchForExcel\bin\Debug\JFetchForExcel.pdb
 C:\Users\intern2\Source\Repos\JFetch\JFetchForExcel\bin\Debug\JFetchNew.dll
 C:\Users\intern2\Source\Repos\JFetch\JFetchForExcel\bin\Debug\Newtonsoft.Json.dll
+C:\Users\intern2\Source\Repos\JFetch\JFetchForExcel\bin\Debug\OrionStuff.dll
 C:\Users\intern2\Source\Repos\JFetch\JFetchForExcel\bin\Debug\JFetchNew.pdb
+C:\Users\intern2\Source\Repos\JFetch\JFetchForExcel\bin\Debug\OrionStuff.pdb
 C:\Users\intern2\Source\Repos\JFetch\JFetchForExcel\bin\Debug\Newtonsoft.Json.xml
 C:\Users\intern2\Source\Repos\JFetch\JFetchForExcel\obj\Debug\JFetchForExcel.csprojAssemblyReference.cache
 C:\Users\intern2\Source\Repos\JFetch\JFetchForExcel\obj\Debug\JFetchForExcel.csproj.CoreCompileInputs.cache
