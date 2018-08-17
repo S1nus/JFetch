@@ -18,8 +18,7 @@ using OrionStuff;
 namespace JFetch {
 	public static class ExcelAddin {
 
-		private static HttpClient client;
-
+		/*
 		[ExcelFunction(Description = "Print info about Kings")]
 		public static object GetKings() {
 			return ExcelAsyncUtil.Run("GetKings", new object[] { }, () => JFetch.JFetchSync("http://mysafeinfo.com/api/data?list=englishmonarchs&format=json", client));
@@ -42,6 +41,7 @@ namespace JFetch {
 				return new ExcelTaskObservable<object[,]>(tcs.Task);
 			});
 		}
+		*/
 
 		[ExcelFunction(Description = "Attempt at FP_Focus")]
 		public static object Fp_Focus_Patch(string groupname, string date) {
@@ -53,6 +53,32 @@ namespace JFetch {
 					object[,] fpresult = await OrionStuff.Orion.FP_Focus(groupname, date);
 					try {
 						tcs.SetResult((object[,])ArrayResizer.Resize(fpresult, caller));
+					}
+					catch (Exception ex) {
+						tcs.SetResult(new object[,] { { ex.ToString() } });
+					}
+				}, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+
+				return new ExcelTaskObservable<object[,]>(tcs.Task);
+			});
+		}
+
+		[ExcelFunction(Description = "Print the account IDs")]
+		public static object Fp_Print_Ids() {
+			ExcelReference caller = XlCall.Excel(XlCall.xlfCaller) as ExcelReference;
+			return ExcelAsyncUtil.Observe("Fp_Focus_Patch", null, delegate {
+				TaskCompletionSource<object[,]> tcs = new TaskCompletionSource<object[,]>();
+
+				Task.Factory.StartNew(async delegate {
+					//object[,] fpresult = await OrionStuff.Orion.FP_Focus(groupname, date);
+					await Orion.GetAccountIds();
+					object[,] ret = new object[Orion.accountIds.Count, 2];
+					for (int i = 0; i<Orion.accountIds.Count; i++) {
+						ret[i, 0] = Orion.accountIds.ElementAt(i).Key;
+						ret[i, 1] = Orion.accountIds.ElementAt(i).Value;
+					}
+					try {
+						tcs.SetResult((object[,])ArrayResizer.Resize(ret, caller));
 					}
 					catch (Exception ex) {
 						tcs.SetResult(new object[,] { { ex.ToString() } });
