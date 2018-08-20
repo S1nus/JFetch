@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
 
-namespace OrionApiSdk.Utils
+namespace JFetchForExcel
 {
 
     public class NonLockingHashMap<T, U> : ConcurrentDictionary<T,U> , IEnumerable

@@ -57,9 +57,9 @@
       <Project>{8518056f-b8fa-47d0-a4ec-f51a93970cdc}</Project>
       <Name>JFetch</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OrionStuff\OrionStuff.csproj">
+    <ProjectReference Include="..\OrionStuff\Orion.csproj">
       <Project>{507c29a5-fe60-4aa8-9091-bd1fc755053a}</Project>
-      <Name>OrionStuff</Name>
+      <Name>Orion</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

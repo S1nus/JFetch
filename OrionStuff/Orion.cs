@@ -8,11 +8,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using JFetch;
 
-namespace OrionStuff {
+namespace Orion {
 	public static class Orion {
 
-		private static string uname = "intern4@fpcm.net";
-		private static string pword = "Unix15cool";
+		private static string uname = "XXXXXXXXXXXXXXXX";
+		private static string pword = "XXXXXXXXXX";
 
 		private static bool loggedIn = false;
 		private static bool loggingIn = false;
@@ -84,7 +84,9 @@ namespace OrionStuff {
 				return array;
 			}
 			else {
-				//return new object[,] { { "Not implemented" } };
+				if (accountIds.Count == 0) {
+					await GetAccountIds();
+				}
 				int idToUse = 0;
 				foreach (KeyValuePair<string, string> kvp in accountIds) {
 					if (kvp.Key.ToLower() == account.ToLower()) {
@@ -92,7 +94,38 @@ namespace OrionStuff {
 						break;
 					}
 				}
-				return new object[,] { { idToUse } };
+				var jstring = @"
+				{		
+				'prompts': [
+					{
+						'id': 18488,
+						'code': '@asofdate',
+						'prompt': 'Enter As of Date',
+						'promptDescription': '',
+						'promptType': 'Date',
+						'defaultValue': '8/19/2018',
+						'isPromptUser': true,
+						'sortOrder': null
+					},
+					{
+						'id': 18489,
+						'code': '@AID',
+						'prompt': 'Account ID',
+						'promptDescription': 'Enter Account ID (0 = All)',
+						'promptType': 'Numeric',
+						'defaultValue': '22',
+						'isPromptUser': true,
+						'sortOrder': null
+					}
+				]
+				}
+				";
+				JObject jobj = JObject.Parse(jstring);
+				jobj["prompts"][0]["defaultValue"] = date;
+				jobj["prompts"][1]["defaultValue"] = idToUse;
+				var payload = new StringContent(jobj.ToString(), Encoding.UTF8, "application/json");
+				var array = await JFetch.JFetch.JFetchAsync("https://api.orionadvisor.com/api/v1/Reporting/custom/13737/Generate/Table", client, "post", payload);
+				return array;
 			}
 		}
 

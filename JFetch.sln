@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JFetch", "JFetch\JFetch.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{8B73B1A9-4E8B-42D2-BA4F-9798414EB579}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrionStuff", "OrionStuff\OrionStuff.csproj", "{507C29A5-FE60-4AA8-9091-BD1FC755053A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orion", "OrionStuff\Orion.csproj", "{507C29A5-FE60-4AA8-9091-BD1FC755053A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
